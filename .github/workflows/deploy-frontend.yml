@@ -1,39 +1,53 @@
 name: Deploy Angular Frontend to InfinityFree
 
-on: push: branches: - main paths: - 'src/' - 'public/' - 'package.json' - 'package-lock.json' - 'angular.json' - 'tsconfig*.json' - '.github/workflows/deploy-frontend.yml' workflow_dispatch:
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'src/**'
+      - 'public/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'angular.json'
+      - 'tsconfig*.json'
+      - '.github/workflows/deploy-frontend.yml'
 
-permissions: contents: read
+  workflow_dispatch:
 
-jobs: deploy: runs-on: ubuntu-latest
+permissions:
+  contents: read
 
-steps:
-  - name: Checkout code
-    uses: actions/checkout@v4
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
 
-  - name: Setup Node.js
-    uses: actions/setup-node@v4
-    with:
-      node-version: 22
-      cache: npm
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-  - name: Install dependencies
-    run: npm ci
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
 
-  - name: Build Angular
-    run: npm run build
+      - name: Install dependencies
+        run: npm ci
 
-  - name: Find Angular build output
-    run: |
-      echo "Checking Angular build output..."
-      find dist -maxdepth 4 -name index.html -print
+      - name: Build Angular
+        run: npm run build
 
-  - name: Deploy to InfinityFree
-    uses: SamKirkland/FTP-Deploy-Action@v4.3.5
-    with:
-      server: ${{ secrets.FTP_SERVER }}
-      username: ${{ secrets.FTP_USERNAME }}
-      password: ${{ secrets.FTP_PASSWORD }}
-      protocol: ftp
-      port: 21
-      local-dir: ./dist/
-      server-dir: /htdocs/
+      - name: Show build output
+        run: find dist -maxdepth 5 -name index.html -print
+
+      - name: Deploy to InfinityFree
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          protocol: ftp
+          port: 21
+          local-dir: ./dist/
+          server-dir: /htdocs/</WritingBlock>
