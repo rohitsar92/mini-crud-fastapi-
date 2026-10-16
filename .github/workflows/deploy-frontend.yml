@@ -50,4 +50,4 @@ jobs:
           protocol: ftp
           port: 21
           local-dir: ./dist/
-          server-dir: /ronitechnologies/htdocs/</WritingBlock>
+          server-dir: /htdocs/</WritingBlock>
